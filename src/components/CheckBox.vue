@@ -5,10 +5,10 @@
     type="checkbox"
     :value="isChecked"
   />
-  <label :for="checkboxId" @click="$emit('update:isChecked', !isChecked)"
+  <label :for="checkboxId" @click="$emit('update:isChecked')" class="my-auto"
     ><svg
       xmlns="http://www.w3.org/2000/svg"
-      class="h-8 w-8 my-auto cursor-pointer"
+      class="h-12 w-12 my-auto cursor-pointer"
       :class="{ 'text-gray-50': isChecked }"
       fill="none"
       viewBox="0 0 24 24"
@@ -40,6 +40,7 @@ export default defineComponent({
       },
     },
   },
+  emits: ["update:isChecked"],
 });
 </script>
 

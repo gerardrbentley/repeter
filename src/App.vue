@@ -1,5 +1,17 @@
 <template>
-  <Day :dayName="todayDisplay" :tasks="tasks" @set-tasks="setTasks" />
+  <header class="h-20 flex-grow-0">
+    <p
+      class="text-5xl my-auto ml-2 font-hairline italic text-gray-50 shadow-md"
+    >
+      Répéter
+    </p>
+  </header>
+  <Day
+    class="w-full md:w-1/2 mx-auto shadow-md"
+    :dayName="todayDisplay"
+    :tasks="tasks"
+    @set-tasks="setTasks"
+  />
 </template>
 
 <script lang="ts">
@@ -82,23 +94,4 @@ export default defineComponent({
 });
 </script>
 
-<style>
-#app {
-  @apply w-full flex justify-center bg-cool-gray-700 h-full;
-}
-
-@screen md {
-  #app {
-    @apply pt-6;
-  }
-}
-
-.dog-ear {
-  @apply rounded-tr-md rounded-b-md;
-}
-
-html,
-body {
-  @apply h-auto flex flex-grow min-h-full;
-}
-</style>
+<style src="./assets/style.css"></style>

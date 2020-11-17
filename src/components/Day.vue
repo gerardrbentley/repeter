@@ -1,9 +1,9 @@
 <template>
-  <div class="single-day flex-grow max-w-screen-sm rounded bg-gray-900 p-2">
+  <div class="rounded bg-gray-900 p-2">
     <div class="flex justify-between py-1">
       <h3 class="text-xl text-gray-50">{{ dayName }}</h3>
       <button
-        class="bg-green-600 hover:bg-green-800 px-2 pb-1 text-2xl text-white font-bold ml-1 rounded-tr-md rounded-b-md"
+        class="h-12 w-12 bg-green-600 hover:bg-green-800 px-2 pb-1 text-2xl text-white font-bold ml-1 rounded-tr-md rounded-b-md"
         @click="addTask()"
       >
         +
@@ -13,7 +13,7 @@
       <ul>
         <li v-for="task in localTasks" :key="task.id">
           <div
-            class="px-2 dog-ear mb-1 border-b border-cool-gray-700 text-xl font-semibold flex flex-row align-middle gap-3"
+            class="pl-2 px-1 py-1 dog-ear mb-1 border-b border-cool-gray-700 text-xl font-semibold flex flex-row align-middle gap-3"
             :class="
               task.completed
                 ? cardColors[task.id % cardColors.length].dark
@@ -35,7 +35,7 @@
               @stop-edit="editId = null"
             ></click-to-edit>
             <button
-              class="bg-red-600 hover:bg-red-800 px-2 text-xl text-white font-bold ml-1 dog-ear my-auto"
+              class="h-12 w-12 bg-red-600 hover:bg-red-800 px-2 text-xl text-white font-bold ml-1 dog-ear my-auto"
               @click="removeTask(task)"
             >
               X

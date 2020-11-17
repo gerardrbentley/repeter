@@ -1,10 +1,13 @@
 <template>
-  <div class="click-to-edit cursor-pointer flex-grow" @click="startEditing">
+  <div
+    class="click-to-edit cursor-pointer flex-grow py-2 text-left"
+    @click="startEditing"
+  >
     <input
       type="text"
       :name="inputId"
       :id="'input' + inputId"
-      class="w-full"
+      class="w-full pl-1"
       :class="{ hidden: !isEditing }"
       :value="title"
       @input="$emit('update:title', $event.target.value)"
@@ -19,12 +22,13 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, onMounted, nextTick } from "vue";
+import { defineComponent, nextTick } from "vue";
 
 export default defineComponent({
+  name: "ClickToEdit",
   props: {
-    title: String,
-    isEditing: Boolean,
+    title: { type: String, required: true },
+    isEditing: { type: Boolean, required: true },
     inputId: {
       type: String,
       default: function () {

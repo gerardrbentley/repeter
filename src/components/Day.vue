@@ -11,25 +11,31 @@
     </div>
     <div class="text-sm mt-2">
       <ul>
-        <li v-for="task in tasks" :key="task.id">
+        <li v-for="task in localTasks" :key="task.id">
           <div
-            class="p-2 rounded mt-1 border-b border-grey text-xl font-semibold flex flex-row gap-3"
+            class="px-2 dog-ear mb-1 border-b border-cool-gray-700 text-xl font-semibold flex flex-row align-middle gap-3"
             :class="
               task.completed
                 ? cardColors[task.id % cardColors.length].dark
                 : cardColors[task.id % cardColors.length].default
             "
           >
-            <check-box v-model:isChecked="task.completed"></check-box>
+            <check-box
+              :isChecked="task.completed"
+              @update:isChecked="
+                updateTask({ ...task, completed: !task.completed })
+              "
+            ></check-box>
             <click-to-edit
-              v-model:title="task.title"
+              :title="task.title"
+              @update:title="updateTask({ ...task, title: $event })"
               :inputId="task.id.toString()"
               :isEditing="editId === task.id"
               @start-edit="editId = task.id"
               @stop-edit="editId = null"
             ></click-to-edit>
             <button
-              class="bg-red-600 hover:bg-red-800 px-2 text-xl text-white font-bold ml-1 dog-ear"
+              class="bg-red-600 hover:bg-red-800 px-2 text-xl text-white font-bold ml-1 dog-ear my-auto"
               @click="removeTask(task)"
             >
               X
@@ -42,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import { reactive, ref, defineComponent, PropType } from "vue";
+import { ref, defineComponent, PropType, watch, reactive } from "vue";
 import CheckBox from "./CheckBox.vue";
 import ClickToEdit from "./ClickToEdit.vue";
 
@@ -66,7 +72,10 @@ export default defineComponent({
   },
   emits: ["set-tasks"],
   setup: (props, { emit }) => {
-    let newTasks: Array<Task> = [];
+    let localTasks = ref<Array<Task>>(props.tasks);
+    watch(localTasks, (newTasks) => {
+      emit("set-tasks", newTasks);
+    });
 
     const cardColors = [
       { default: "bg-red-500 hover:bg-red-800", dark: "bg-red-800" },
@@ -81,10 +90,11 @@ export default defineComponent({
 
     const editId = ref<number | null>(null);
     const removeTask = (task: Task) => {
-      newTasks = Array.from(props.tasks);
+      let newTasks = Array.from(localTasks.value);
       newTasks.splice(newTasks.indexOf(task), 1);
-      emit("set-tasks", newTasks);
+      localTasks.value = newTasks;
     };
+
     const addTask = () => {
       let latestTask = props.tasks.reduce((taskA, taskB) => {
         return taskA.id > taskB.id ? taskA : taskB;
@@ -94,14 +104,23 @@ export default defineComponent({
         title: `Task Num ${latestTask.id + 1}`,
         completed: false,
       };
-
-      newTasks = [newT].concat(props.tasks);
-      emit("set-tasks", newTasks);
+      let newTasks = [newT].concat(localTasks.value);
+      localTasks.value = newTasks;
     };
-    const updateEditId = (newId) => {
+
+    const updateTask = (newTask: Task) => {
+      let newTasks = Array.from(localTasks.value);
+      newTasks[newTasks.findIndex((task) => task.id === newTask.id)] = newTask;
+      localTasks.value = newTasks;
+    };
+
+    const updateEditId = (newId: number) => {
       editId.value = newId;
     };
+
     return {
+      updateTask,
+      localTasks,
       cardColors,
       editId,
       removeTask,

@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, reactive, readonly, toRefs } from "vue";
+import { defineComponent, reactive, toRefs } from "vue";
 import Day from "./components/Day.vue";
 
 export interface Store {
@@ -55,6 +55,7 @@ export default defineComponent({
   setup() {
     const today = new Date();
     const todayDisplay = today.toLocaleDateString();
+
     const store = reactive<Store>(source);
     let { tasks, checkins } = toRefs(store);
 
@@ -64,7 +65,6 @@ export default defineComponent({
 
     let resetTasks = true;
     for (let i = checkins.value.length - 1; i >= 0; i--) {
-      console.log(checkins.value[i]);
       if (checkins.value[i] == todayDisplay) {
         resetTasks = false;
         break;
@@ -72,21 +72,13 @@ export default defineComponent({
     }
 
     if (resetTasks) {
-      console.log("reset Tasks!");
-      let newCheckins = Array.from(checkins.value);
-      newCheckins.push(todayDisplay);
-      checkins.value = newCheckins;
-      let newTasks = tasks.value.map((task) => ({ ...task, completed: false }));
-      tasks.value = newTasks;
+      checkins.value = [...checkins.value, todayDisplay];
+      tasks.value = tasks.value.map((task) => ({ ...task, completed: false }));
       saveStorage(store);
     }
 
     const setTasks = (newTasks: Array<Task>) => {
       tasks.value = newTasks;
-      let checkedTasks = newTasks
-        .filter((task) => task.completed)
-        .map((task) => task.id);
-
       saveStorage(store);
     };
     return { todayDisplay, tasks, setTasks };

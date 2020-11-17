@@ -48,11 +48,22 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, PropType, watch, reactive } from "vue";
+import { ref, defineComponent, PropType, watch } from "vue";
 import CheckBox from "./CheckBox.vue";
 import ClickToEdit from "./ClickToEdit.vue";
 
 import type { Task } from "../App.vue";
+
+const cardColors = [
+  { default: "bg-red-500 hover:bg-red-800", dark: "bg-red-800" },
+  { default: "bg-orange-500 hover:bg-orange-800", dark: "bg-orange-800" },
+  { default: "bg-yellow-500 hover:bg-yellow-800", dark: "bg-yellow-800" },
+  { default: "bg-green-500 hover:bg-green-800", dark: "bg-green-800" },
+  { default: "bg-blue-500 hover:bg-blue-800", dark: "bg-blue-800" },
+  { default: "bg-indigo-500 hover:bg-indigo-800", dark: "bg-indigo-800" },
+  { default: "bg-purple-500 hover:bg-purple-800", dark: "bg-purple-800" },
+  { default: "bg-pink-500 hover:bg-pink-800", dark: "bg-pink-800" },
+];
 
 export default defineComponent({
   name: "Day",
@@ -72,27 +83,17 @@ export default defineComponent({
   },
   emits: ["set-tasks"],
   setup: (props, { emit }) => {
-    let localTasks = ref<Array<Task>>(props.tasks);
+    const localTasks = ref<Array<Task>>(props.tasks);
+    const editId = ref<number | null>(null);
+
     watch(localTasks, (newTasks) => {
       emit("set-tasks", newTasks);
     });
 
-    const cardColors = [
-      { default: "bg-red-500 hover:bg-red-800", dark: "bg-red-800" },
-      { default: "bg-orange-500 hover:bg-orange-800", dark: "bg-orange-800" },
-      { default: "bg-yellow-500 hover:bg-yellow-800", dark: "bg-yellow-800" },
-      { default: "bg-green-500 hover:bg-green-800", dark: "bg-green-800" },
-      { default: "bg-blue-500 hover:bg-blue-800", dark: "bg-blue-800" },
-      { default: "bg-indigo-500 hover:bg-indigo-800", dark: "bg-indigo-800" },
-      { default: "bg-purple-500 hover:bg-purple-800", dark: "bg-purple-800" },
-      { default: "bg-pink-500 hover:bg-pink-800", dark: "bg-pink-800" },
-    ];
-
-    const editId = ref<number | null>(null);
-    const removeTask = (task: Task) => {
-      let newTasks = Array.from(localTasks.value);
-      newTasks.splice(newTasks.indexOf(task), 1);
-      localTasks.value = newTasks;
+    const removeTask = (toRemove: Task) => {
+      localTasks.value = localTasks.value.filter(
+        (task) => task.id !== toRemove.id
+      );
     };
 
     const addTask = () => {
@@ -104,14 +105,13 @@ export default defineComponent({
         title: `Task Num ${latestTask.id + 1}`,
         completed: false,
       };
-      let newTasks = [newT].concat(localTasks.value);
-      localTasks.value = newTasks;
+      localTasks.value = [newT].concat(localTasks.value);
     };
 
     const updateTask = (newTask: Task) => {
-      let newTasks = Array.from(localTasks.value);
-      newTasks[newTasks.findIndex((task) => task.id === newTask.id)] = newTask;
-      localTasks.value = newTasks;
+      localTasks.value = localTasks.value.map((task) => {
+        return task.id === newTask.id ? newTask : task;
+      });
     };
 
     const updateEditId = (newId: number) => {

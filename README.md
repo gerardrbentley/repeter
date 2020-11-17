@@ -1,3 +1,27 @@
+# Repeter
+
+A simple todo tracker that unchecks each task at the start of a new day. Maintains your tasks in local browser storage.
+
+# Running Locally
+
+```bash
+# Clone
+git clone git@github.com:gerardrbentley/repeter.git repeter
+cd repeter
+
+# Install and Run dev
+yarn
+yarn dev
+# OR
+npm install
+npm run dev
+
+# Build static bundle in /dist/
+yarn build
+# OR
+npm run build
+```
+
 # Vue Composition API
 
 ## `setup` In `defineComponent`

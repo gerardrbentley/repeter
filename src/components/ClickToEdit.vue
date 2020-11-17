@@ -31,9 +31,7 @@ export default defineComponent({
     isEditing: { type: Boolean, required: true },
     inputId: {
       type: String,
-      default: function () {
-        return Math.floor(Math.random() * 10000).toString();
-      },
+      default: () => Math.floor(Math.random() * 10000).toString(),
     },
   },
   emits: ["start-edit", "stop-edit", "update:title"],

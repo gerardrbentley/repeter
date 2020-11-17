@@ -1,6 +1,10 @@
 # Repeter
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/b767c221-cd26-410b-962f-bd8cd14b81a8/deploy-status)](https://app.netlify.com/sites/angry-shockley-3f0900/deploys)
+
 A simple todo tracker that unchecks each task at the start of a new day. Maintains your tasks in local browser storage.
+
+See it live at [repeter.gerardbentley.com](https://repeter.gerardbentley.com)
 
 # Running Locally
 
@@ -40,13 +44,13 @@ Whatever `setup` returns is accessible in the component template.
 export default defineComponent({
   props: {
     firstName: {
-      tye: String,
+      type: String,
       required: true,
     },
   },
   setup(props) {
     console.log(props);
-    let greeting = `Hello there, general ${firstName}`;
+    let greeting = `Hello there, general ${props.firstName}`;
     return { greeting };
   },
 });

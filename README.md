@@ -6,9 +6,9 @@
 
 Whatever `setup` returns is accessible in the component template.
 
-`setup` has access to `props` and `context`.
+`setup` has access to `props`, `attrs`, `slots`, `emit` and `context`.
 
-`setup` does not have access to `this`, data, or computed.
+`setup` does not have access to `this`, `data`, `computed`, or `methods`.
 
 ### calling with props & context
 

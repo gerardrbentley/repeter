@@ -1,99 +1,117 @@
 <template>
   <div class="single-day flex-grow max-w-screen-sm rounded bg-gray-900 p-2">
     <div class="flex justify-between py-1">
-        <h3 class="text-xl text-gray-50">{{ dayName }}</h3>
-
+      <h3 class="text-xl text-gray-50">{{ dayName }}</h3>
+      <button
+        class="bg-green-600 hover:bg-green-800 px-2 pb-1 text-2xl text-white font-bold ml-1 rounded-tr-md rounded-b-md"
+        @click="addTask()"
+      >
+        +
+      </button>
     </div>
-      <div class="text-sm mt-2">
-        <div class="bg-red-600 p-2 rounded-sm mt-1 border-b border-grey cursor-pointer text-xl font-semibold">
-        <div class="flex flex-row">  
-          <input
-              class="toggle hidden"
-              type="checkbox"
-            />
-            <label
-              ><svg
-                xmlns="http://www.w3.org/2000/svg"
-              class="h-8 w-8 my-auto"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="{2}"
-                  :d="
-                    true
-                      ? 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'
-                      : 'M9 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z'
-                  "
-                /></svg
-            ></label>
-            Task 1
-            </div>
-
-        </div>
-        <div class="bg-orange-600 p-2 rounded mt-1 border-b border-grey cursor-pointer text-xl font-semibold">
-          <div class="flex flex-row">
-          <check-box v-model:isChecked="checked2"></check-box>
-          Task 2
+    <div class="text-sm mt-2">
+      <ul>
+        <li v-for="task in tasks" :key="task.id">
+          <div
+            class="p-2 rounded mt-1 border-b border-grey text-xl font-semibold flex flex-row gap-3"
+            :class="
+              task.completed
+                ? cardColors[task.id % cardColors.length].dark
+                : cardColors[task.id % cardColors.length].default
+            "
+          >
+            <check-box v-model:isChecked="task.completed"></check-box>
+            <click-to-edit
+              v-model:title="task.title"
+              :inputId="task.id.toString()"
+              :isEditing="editId === task.id"
+              @start-edit="editId = task.id"
+              @stop-edit="editId = null"
+            ></click-to-edit>
+            <button
+              class="bg-red-600 hover:bg-red-800 px-2 text-xl text-white font-bold ml-1 dog-ear"
+              @click="removeTask(task)"
+            >
+              X
+            </button>
           </div>
-        </div>
-        <div class="bg-yellow-600 p-2 rounded mt-1 border-b border-grey cursor-pointer text-xl font-semibold">
-          Task 3
-        </div>
-        <div class="bg-green-600 p-2 rounded mt-1 border-b border-grey cursor-pointer text-xl font-semibold">
-          Task 3
-        </div>
-        <div class="bg-blue-600 p-2 rounded mt-1 border-b border-grey cursor-pointer text-xl font-semibold">
-          Task 3
-        </div>
-        <div class="bg-indigo-600 p-2 rounded mt-1 border-b border-grey cursor-pointer text-xl font-semibold">
-          Task 3
-        </div>
-        <div class="bg-purple-600 p-2 rounded mt-1 border-b border-grey cursor-pointer text-xl font-semibold">
-          Task 3
-        </div>
-      </div>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { reactive, ref, defineComponent } from 'vue'
-import CheckBox from './CheckBox.vue'
-import {useState} from '../composables/state'
+import { reactive, ref, defineComponent, PropType } from "vue";
+import CheckBox from "./CheckBox.vue";
+import ClickToEdit from "./ClickToEdit.vue";
 
 interface Task {
-    id: number;
-    title: string;
-    completed: boolean;
-};
-
+  id: number;
+  title: string;
+  completed: boolean;
+}
 
 export default defineComponent({
-  name: 'Day',
+  name: "Day",
   components: {
-    CheckBox
+    CheckBox,
+    ClickToEdit,
   },
   props: {
     dayName: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
+    tasks: {
+      type: Object as PropType<Array<Task>>,
+      required: true,
+    },
   },
-  setup: () => {
-    const tasks = ref<Array<Task>>([]);
-    const setTasks = (newTasks: Array<Task>) => {
-        tasks.value = newTasks;
+  emits: ["set-tasks"],
+  setup: (props, { emit }) => {
+    let newTasks = [];
+
+    const cardColors = [
+      { default: "bg-red-500 hover:bg-red-800", dark: "bg-red-800" },
+      { default: "bg-orange-500 hover:bg-orange-800", dark: "bg-orange-800" },
+      { default: "bg-yellow-500 hover:bg-yellow-800", dark: "bg-yellow-800" },
+      { default: "bg-green-500 hover:bg-green-800", dark: "bg-green-800" },
+      { default: "bg-blue-500 hover:bg-blue-800", dark: "bg-blue-800" },
+      { default: "bg-indigo-500 hover:bg-indigo-800", dark: "bg-indigo-800" },
+      { default: "bg-purple-500 hover:bg-purple-800", dark: "bg-purple-800" },
+      { default: "bg-pink-500 hover:bg-pink-800", dark: "bg-pink-800" },
+    ];
+
+    const editId = ref<number | null>(null);
+    const removeTask = (task: Task) => {
+      newTasks = Array.from(props.tasks);
+      newTasks.splice(newTasks.indexOf(task), 1);
+      emit("set-tasks", newTasks);
     };
-    const newTasks = []
-    for (let i=0; i < 7; i++) {
-      let newT: Task = {id: i, title: `Task Num ${i}`, completed: false}
-      newTasks.push(newT)
-    }
-    setTasks(newTasks)
-    return { tasks, setTasks }
-  }
-})
+    const addTask = () => {
+      let latestTask = props.tasks.reduce((taskA, taskB) => {
+        return taskA.id > taskB.id ? taskA : taskB;
+      });
+      let newT: Task = {
+        id: latestTask.id + 1,
+        title: `Task Num ${latestTask.id + 1}`,
+        completed: false,
+      };
+
+      newTasks = [newT].concat(props.tasks);
+      emit("set-tasks", newTasks);
+    };
+    const updateEditId = (newId) => {
+      editId.value = newId;
+    };
+    return {
+      cardColors,
+      editId,
+      removeTask,
+      addTask,
+      updateEditId,
+    };
+  },
+});
 </script>

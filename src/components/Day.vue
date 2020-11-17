@@ -46,11 +46,7 @@ import { reactive, ref, defineComponent, PropType } from "vue";
 import CheckBox from "./CheckBox.vue";
 import ClickToEdit from "./ClickToEdit.vue";
 
-interface Task {
-  id: number;
-  title: string;
-  completed: boolean;
-}
+import type { Task } from "../App.vue";
 
 export default defineComponent({
   name: "Day",
@@ -70,7 +66,7 @@ export default defineComponent({
   },
   emits: ["set-tasks"],
   setup: (props, { emit }) => {
-    let newTasks = [];
+    let newTasks: Array<Task> = [];
 
     const cardColors = [
       { default: "bg-red-500 hover:bg-red-800", dark: "bg-red-800" },

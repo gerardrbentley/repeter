@@ -3,8 +3,37 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent } from "vue";
+import { ref, defineComponent, reactive, readonly, toRefs } from "vue";
 import Day from "./components/Day.vue";
+
+export interface Store {
+  checkins: string[];
+  tasks: Task[];
+}
+
+export interface Task {
+  id: number;
+  title: string;
+  completed: boolean;
+}
+
+const STORAGE_KEY = "daily-list";
+const source: Store = JSON.parse(
+  localStorage.getItem(STORAGE_KEY) || '{"checkins": [], "tasks": []}'
+);
+
+const saveStorage = (newStore: Store) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(newStore));
+};
+
+const makeDummyTasks = () => {
+  let dummyTasks: Array<Task> = [];
+  for (let i = 5; i > 0; i--) {
+    let newT: Task = { id: i, title: `Task Num ${i}`, completed: false };
+    dummyTasks.push(newT);
+  }
+  return dummyTasks;
+};
 
 export default defineComponent({
   name: "App",
@@ -15,19 +44,17 @@ export default defineComponent({
     const today = new Date();
     const todayDisplay = today.toLocaleDateString();
 
-    const tasks = ref<Array<Task>>([]);
-    const setTasks = (newTasks: Array<Task>) => {
-      console.log("gettin new tasks", newTasks);
-      tasks.value = newTasks;
-    };
+    const store = reactive<Store>(source);
+    let { tasks, checkins } = toRefs(store);
 
-    let newTasks = [];
-    for (let i = 5; i > 0; i--) {
-      let newT: Task = { id: i, title: `Task Num ${i}`, completed: false };
-      newTasks.push(newT);
+    if (tasks.value.length === 0) {
+      tasks.value = makeDummyTasks();
     }
-    setTasks(newTasks);
 
+    const setTasks = (newTasks: Array<Task>) => {
+      tasks.value = newTasks;
+      saveStorage(store);
+    };
     return { todayDisplay, tasks, setTasks };
   },
 });

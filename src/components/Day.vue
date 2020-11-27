@@ -97,9 +97,12 @@ export default defineComponent({
     };
 
     const addTask = () => {
-      let latestTask = props.tasks.reduce((taskA, taskB) => {
-        return taskA.id > taskB.id ? taskA : taskB;
-      });
+      let latestTask =
+        props.tasks.length > 0
+          ? props.tasks.reduce((taskA, taskB) => {
+              return taskA.id > taskB.id ? taskA : taskB;
+            })
+          : { id: 0 };
       let newT: Task = {
         id: latestTask.id + 1,
         title: `Task Num ${latestTask.id + 1}`,

@@ -15,7 +15,7 @@
     />
     <task-view class="w-full md:w-1/2 mx-auto shadow-md" :duration="'5'" />
   </div>
-  <github-corner url="'https://github.com/gerardrbentley/repeter'" />
+  <github-corner url="https://github.com/gerardrbentley/repeter" />
 </template>
 
 <script lang="ts">

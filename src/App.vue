@@ -6,18 +6,22 @@
       Répéter
     </p>
   </header>
-  <Day
-    class="w-full md:w-1/2 mx-auto shadow-md"
-    :dayName="todayDisplay"
-    :tasks="tasks"
-    @set-tasks="setTasks"
-  />
+  <div class="flex flex-col md:flex-row gap-2 mx-2">
+    <day
+      class="w-full md:w-1/2 mx-auto shadow-md"
+      :dayName="todayDisplay"
+      :tasks="tasks"
+      @set-tasks="setTasks"
+    />
+    <task-view class="w-full md:w-1/2 mx-auto shadow-md" :duration="'5'" />
+  </div>
   <github-corner url="'https://github.com/gerardrbentley/repeter'" />
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from "vue";
 import Day from "./components/Day.vue";
+import TaskView from "./components/TaskView.vue";
 import GithubCorner from "./components/GithubCorner.vue";
 
 export interface Store {
@@ -53,6 +57,8 @@ export default defineComponent({
   name: "App",
   components: {
     Day,
+    GithubCorner,
+    TaskView,
   },
   setup() {
     const today = new Date();

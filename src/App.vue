@@ -12,11 +12,13 @@
     :tasks="tasks"
     @set-tasks="setTasks"
   />
+  <github-corner url="'https://github.com/gerardrbentley/repeter'" />
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from "vue";
 import Day from "./components/Day.vue";
+import GithubCorner from "./components/GithubCorner.vue";
 
 export interface Store {
   checkins: string[];

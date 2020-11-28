@@ -1,13 +1,10 @@
 <template>
-  <div
-    class="click-to-edit cursor-pointer flex-grow py-2 text-left"
-    @click="startEditing"
-  >
+  <div>
     <input
       type="text"
       :name="inputId"
       :id="'input' + inputId"
-      class="w-full pl-1"
+      class="w-full pl-1 my-auto"
       :class="{ hidden: !isEditing }"
       :value="title"
       @input="$emit('update:title', $event.target.value)"
@@ -15,14 +12,17 @@
       @keyup.esc="$emit('stop-edit')"
       @keyup.enter="$emit('stop-edit')"
     />
-    <label :for="inputId" class="w-full" :class="{ hidden: isEditing }">{{
-      title
-    }}</label>
+    <label
+      :for="inputId"
+      class="w-full my-auto cursor-pointer"
+      :class="{ hidden: isEditing }"
+      >{{ title }}</label
+    >
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick } from "vue";
+import { defineComponent, nextTick, watch } from "vue";
 
 export default defineComponent({
   name: "ClickToEdit",
@@ -36,16 +36,14 @@ export default defineComponent({
   },
   emits: ["start-edit", "stop-edit", "update:title"],
   setup(props, { emit }) {
-    const startEditing = async () => {
-      emit("start-edit");
-
+    watch(props, async () => {
       let inputField = document.querySelector(`#input${props.inputId}`);
       if (inputField instanceof HTMLInputElement) {
         await nextTick();
         inputField.focus();
       }
-    };
-    return { startEditing };
+    });
+    return {};
   },
 });
 </script>

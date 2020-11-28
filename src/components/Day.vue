@@ -18,7 +18,7 @@
               task.completed
                 ? cardColors[task.id % cardColors.length].dark
                 : cardColors[task.id % cardColors.length].default,
-              task.id === focusedTaskId ? 'md:h-28' : '',
+              task.id === focusedTaskId ? 'h-24' : '',
             ]"
           >
             <check-box
@@ -28,12 +28,13 @@
               "
             ></check-box>
             <click-to-edit
-              class="my-auto"
+              class="flex my-auto h-full click-to-edit cursor-pointer overflow-hidden flex-grow text-left"
               :title="task.title"
               @update:title="updateTask({ ...task, title: $event })"
               :inputId="task.id.toString()"
               :isEditing="editId === task.id"
-              @start-edit="editId = task.id"
+              @dblclick="editId = task.id"
+              @click.exact="focusedTaskId = task.id"
               @stop-edit="editId = null"
             ></click-to-edit>
             <time-picker

@@ -36,6 +36,10 @@
               @start-edit="editId = task.id"
               @stop-edit="editId = null"
             ></click-to-edit>
+            <time-picker
+              v-model:duration="task.duration"
+              class="dog-ear shadow-md my-auto py-1"
+            />
             <button
               class="h-12 w-12 bg-red-600 hover:bg-red-800 px-2 text-xl text-white font-bold ml-1 dog-ear my-auto"
               @click="removeTask(task)"
@@ -53,8 +57,16 @@
 import { ref, defineComponent, PropType, watch } from "vue";
 import CheckBox from "./CheckBox.vue";
 import ClickToEdit from "./ClickToEdit.vue";
+import TimePicker from "./TimePicker.vue";
 
-import { Task, tasks, setTasks, swapFocus, focusedTaskId } from "../global";
+import {
+  Task,
+  tasks,
+  setTasks,
+  swapFocus,
+  focusedTaskId,
+  secondsFormat,
+} from "../global";
 
 const cardColors = [
   { default: "bg-red-500 hover:bg-red-800", dark: "bg-red-800" },
@@ -72,6 +84,7 @@ export default defineComponent({
   components: {
     CheckBox,
     ClickToEdit,
+    TimePicker,
   },
   props: {
     dayName: {
@@ -126,6 +139,8 @@ export default defineComponent({
       removeTask,
       addTask,
       updateEditId,
+      secondsFormat,
+      focusedTaskId,
     };
   },
 });

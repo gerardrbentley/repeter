@@ -76,8 +76,8 @@ export default defineComponent({
       );
     });
     const timeSpent = ref(0.0);
-    const increment = () => {
-      timeSpent.value += 0.1;
+    const setTimeSpent = (newTime: number) => {
+      timeSpent.value = newTime;
       if (timeSpent.value > currentTask.value.duration) {
         tasks.value = tasks.value.map((task) =>
           task.id === focusedTaskId.value ? { ...task, completed: true } : task
@@ -92,6 +92,18 @@ export default defineComponent({
     });
     const isRunning = ref(false);
     const isStarted = ref(false);
+    let backgroundWorker: Worker | null;
+    if (typeof Worker !== "undefined") {
+      backgroundWorker = new Worker("/worker-timer.js");
+      backgroundWorker.onmessage = function (event) {
+        setTimeSpent(event.data);
+      };
+    } else {
+      backgroundWorker = null;
+      alert(
+        "This application requires Web Workers to run background timer; try a different browser or timer app, sorry."
+      );
+    }
     const setIsRunning = (val: boolean) => {
       isRunning.value = val;
       let svgBackground = <SVGSVGElement>document.querySelector("#rect");
@@ -100,7 +112,7 @@ export default defineComponent({
       );
       if (val) {
         if (isStarted.value) {
-          console.log("unpausing");
+          backgroundWorker?.postMessage("unpause");
           try {
             svgTransform.getStartTime();
             svgBackground.unpauseAnimations();
@@ -108,24 +120,20 @@ export default defineComponent({
             console.log("e", error);
           }
         } else {
-          console.log("starting");
           isStarted.value = true;
           svgTransform.beginElement();
+          backgroundWorker?.postMessage("start");
         }
-        stopWatch = setInterval(() => {
-          increment();
-        }, 100);
       } else {
-        console.log("pausing");
         svgBackground.pauseAnimations();
-        clearInterval(stopWatch);
+        backgroundWorker?.postMessage("pause");
       }
     };
     const changeTask = async (direction: String) => {
       let svgBackground = <SVGSVGElement>document.querySelector("#rect");
       swapFocus(direction);
+      backgroundWorker?.postMessage("pause");
       await nextTick();
-      clearInterval(stopWatch);
       svgBackground.unpauseAnimations();
       timeSpent.value = 0.0;
       isStarted.value = false;

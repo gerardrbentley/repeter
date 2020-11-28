@@ -1,5 +1,5 @@
 #app {
-    @apply w-full text-center block justify-center bg-cool-gray-700 h-full;
+    @apply w-full text-center block justify-center bg-gray-700 h-full;
 }
 
 .dog-ear {

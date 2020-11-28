@@ -1,5 +1,3 @@
-const defaultTheme = require("tailwindcss/defaultTheme");
-
 module.exports = {
   purge: {
     enabled: process.env.NODE_ENV === "production",
@@ -12,7 +10,7 @@ module.exports = {
     ],
   },
   theme: {},
-  plugins: [require("@tailwindcss/ui"), require("@tailwindcss/typography")],
+  plugins: [],
   future: {
     removeDeprecatedGapUtilities: true,
     purgeLayersByDefault: true,

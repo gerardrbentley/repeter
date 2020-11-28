@@ -1,7 +1,7 @@
 <template>
   <div class="rounded bg-gray-900 p-2">
     <div class="flex justify-between py-1">
-      <h3 class="text-xl text-gray-50">{{ dayName }}</h3>
+      <h3 class="text-xl text-white">{{ dayName }}</h3>
       <button
         class="h-12 w-12 bg-green-600 hover:bg-green-800 px-2 pb-1 text-2xl text-white font-bold ml-1 rounded-tr-md rounded-b-md"
         @click="addTask()"
@@ -13,12 +13,13 @@
       <ul>
         <li v-for="task in tasks" :key="task.id">
           <div
-            class="pl-2 px-1 py-1 dog-ear mb-1 border-b border-cool-gray-700 text-xl font-semibold flex flex-row align-middle gap-3"
-            :class="
+            class="pl-2 px-1 py-1 dog-ear mb-1 border-b border-gray-700 text-xl font-semibold flex flex-row gap-3"
+            :class="[
               task.completed
                 ? cardColors[task.id % cardColors.length].dark
-                : cardColors[task.id % cardColors.length].default
-            "
+                : cardColors[task.id % cardColors.length].default,
+              task.id === focusedTaskId ? 'md:h-28' : '',
+            ]"
           >
             <check-box
               :isChecked="task.completed"
@@ -27,6 +28,7 @@
               "
             ></check-box>
             <click-to-edit
+              class="my-auto"
               :title="task.title"
               @update:title="updateTask({ ...task, title: $event })"
               :inputId="task.id.toString()"

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="task relative min-h-screen md:min-h-0 max-h-screen bg-cool-gray-900 border-8 border-gray-900 shadow-md z-0"
+    class="task relative min-h-screen md:min-h-0 max-h-screen bg-gray-900 border-8 border-gray-900 shadow-md z-0"
   >
     <svg
       v-show="isRunning || timeSpent > 0"
@@ -25,7 +25,7 @@
     <div
       class="absolute content h-full w-full mx-auto flex flex-col gap-4 justify-center z-20"
     >
-      <div class="header w-full text-lg text-cool-gray-100 font-semibold">
+      <div class="header w-full text-lg text-gray-100 font-semibold">
         <span>{{ currentTask.title }} ({{ durationDisplay }})</span>
       </div>
       <div class="controls flex flex-row gap-2 justify-center w-full">
@@ -53,7 +53,7 @@
       </div>
       <div class="time-spent w-full">
         <span
-          class="text-lg text-cool-gray-200"
+          class="text-lg text-gray-200"
           :class="[timeSpent > currentTask.duration ? 'font-bold text-xl' : '']"
           >{{ timeSpentDisplay }}
         </span>
@@ -158,10 +158,10 @@ export default defineComponent({
 
 <style scoped>
 .begin-btn {
-  @apply bg-blue-700 text-cool-gray-50 font-semibold tracking-wider px-2 py-1 shadow-lg;
+  @apply bg-blue-700 text-white font-semibold tracking-wider px-2 py-1 shadow-lg;
 }
 
 .pause-btn {
-  @apply bg-blue-400 text-cool-gray-50 tracking-wider px-2 py-1 shadow-lg;
+  @apply bg-blue-400 text-white tracking-wider px-2 py-1 shadow-lg;
 }
 </style>

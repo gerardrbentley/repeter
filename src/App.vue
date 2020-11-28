@@ -1,8 +1,6 @@
 <template>
   <header class="h-20 flex-grow-0">
-    <p
-      class="text-5xl my-auto ml-2 font-hairline italic text-gray-50 shadow-md"
-    >
+    <p class="text-5xl my-auto ml-2 font-hairline italic text-white shadow-md">
       Répéter
     </p>
   </header>

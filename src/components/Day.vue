@@ -11,7 +11,7 @@
     </div>
     <div class="text-sm mt-2">
       <ul>
-        <li v-for="task in localTasks" :key="task.id">
+        <li v-for="task in tasks" :key="task.id">
           <div
             class="pl-2 px-1 py-1 dog-ear mb-1 border-b border-cool-gray-700 text-xl font-semibold flex flex-row align-middle gap-3"
             :class="
@@ -52,7 +52,7 @@ import { ref, defineComponent, PropType, watch } from "vue";
 import CheckBox from "./CheckBox.vue";
 import ClickToEdit from "./ClickToEdit.vue";
 
-import type { Task } from "../App.vue";
+import { Task, tasks, setTasks, swapFocus, focusedTaskId } from "../global";
 
 const cardColors = [
   { default: "bg-red-500 hover:bg-red-800", dark: "bg-red-800" },
@@ -76,30 +76,24 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    tasks: {
-      type: Object as PropType<Array<Task>>,
-      required: true,
-    },
   },
   emits: ["set-tasks"],
   setup: (props, { emit }) => {
-    const localTasks = ref<Array<Task>>(props.tasks);
     const editId = ref<number | null>(null);
 
-    watch(localTasks, (newTasks) => {
-      emit("set-tasks", newTasks);
-    });
-
     const removeTask = (toRemove: Task) => {
-      localTasks.value = localTasks.value.filter(
-        (task) => task.id !== toRemove.id
-      );
+      if (tasks.value.length > 1) {
+        if (focusedTaskId.value === toRemove.id) {
+          swapFocus("next");
+        }
+        tasks.value = tasks.value.filter((task) => task.id !== toRemove.id);
+      }
     };
 
     const addTask = () => {
       let latestTask =
-        props.tasks.length > 0
-          ? props.tasks.reduce((taskA, taskB) => {
+        tasks.value.length > 0
+          ? tasks.value.reduce((taskA, taskB) => {
               return taskA.id > taskB.id ? taskA : taskB;
             })
           : { id: 0 };
@@ -107,12 +101,13 @@ export default defineComponent({
         id: latestTask.id + 1,
         title: `Task Num ${latestTask.id + 1}`,
         completed: false,
+        duration: 60 * 10,
       };
-      localTasks.value = [newT].concat(localTasks.value);
+      tasks.value = [newT].concat(tasks.value);
     };
 
     const updateTask = (newTask: Task) => {
-      localTasks.value = localTasks.value.map((task) => {
+      tasks.value = tasks.value.map((task) => {
         return task.id === newTask.id ? newTask : task;
       });
     };
@@ -123,7 +118,7 @@ export default defineComponent({
 
     return {
       updateTask,
-      localTasks,
+      tasks,
       cardColors,
       editId,
       removeTask,

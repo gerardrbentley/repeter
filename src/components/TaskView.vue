@@ -26,7 +26,7 @@
       class="absolute content h-full w-full mx-auto flex flex-col gap-4 justify-center z-20"
     >
       <div class="header w-full text-lg text-cool-gray-100 font-semibold">
-        <span>{{ taskName }} ({{ durationDisplay }})</span>
+        <span>{{ currentTask.title }} ({{ durationDisplay }})</span>
       </div>
       <div class="controls flex flex-row gap-2 justify-center w-full">
         <button
@@ -54,7 +54,7 @@
       <div class="time-spent w-full">
         <span
           class="text-lg text-cool-gray-200"
-          :class="[timeSpent > duration ? 'font-bold text-xl' : '']"
+          :class="[timeSpent > currentTask.duration ? 'font-bold text-xl' : '']"
           >{{ timeSpentDisplay }}
         </span>
       </div>
@@ -64,43 +64,31 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref, computed, nextTick } from "vue";
-
-let secondsFormat = (totalSeconds: number) => {
-  let hours = Math.floor(totalSeconds / 3600);
-  let minutes = Math.floor((totalSeconds % 3600) / 60);
-  let seconds = totalSeconds % 60;
-
-  let hourString = hours > 0 ? `${hours}:${minutes < 10 ? "0" : ""}` : "";
-  let minuteString = `${minutes}:${seconds < 10 ? "0" : ""}`;
-  let timeString = `${hourString}${minuteString}${seconds}`;
-
-  return timeString;
-};
-
-interface TaskViewProps {
-  propA: string;
-}
+import { focusedTaskId, swapFocus, tasks, secondsFormat } from "../global";
 
 export default defineComponent({
   name: "TaskView",
-  props: {
-    taskName: {
-      type: String,
-      default: "Focus Task",
-    },
-    duration: {
-      type: Number,
-      default: 20 * 60,
-    },
-  },
-  setup(props, { emit }) {
+  setup() {
+    let currentTask = computed(() => {
+      return (
+        tasks.value.find((task) => task.id === focusedTaskId.value) ||
+        tasks.value[0]
+      );
+    });
     const timeSpent = ref(0.0);
     const increment = () => {
       timeSpent.value += 0.1;
+      if (timeSpent.value > currentTask.value.duration) {
+        tasks.value = tasks.value.map((task) =>
+          task.id === focusedTaskId.value ? { ...task, completed: true } : task
+        );
+      }
     };
     let stopWatch: NodeJS.Timeout;
     const progressFill = computed(() => {
-      return timeSpent.value < props.duration ? "#0e9f6e" : "#f98080";
+      return timeSpent.value < currentTask.value.duration
+        ? "#0e9f6e"
+        : "#f98080";
     });
     const isRunning = ref(false);
     const isStarted = ref(false);
@@ -125,7 +113,6 @@ export default defineComponent({
           svgTransform.beginElement();
         }
         stopWatch = setInterval(() => {
-          console.log("stopwatch");
           increment();
         }, 100);
       } else {
@@ -136,7 +123,7 @@ export default defineComponent({
     };
     const changeTask = async (direction: String) => {
       let svgBackground = <SVGSVGElement>document.querySelector("#rect");
-      emit("change-task", direction);
+      swapFocus(direction);
       await nextTick();
       clearInterval(stopWatch);
       svgBackground.unpauseAnimations();
@@ -149,12 +136,13 @@ export default defineComponent({
       return secondsFormat(Math.floor(timeSpent.value));
     });
     const durationDisplay = computed(() => {
-      return secondsFormat(props.duration);
+      return secondsFormat(currentTask.value.duration);
     });
     const animationDuration = computed(() => {
-      return `${props.duration}s`;
+      return `${currentTask.value.duration}s`;
     });
     return {
+      currentTask,
       durationDisplay,
       progressFill,
       timeSpentDisplay,

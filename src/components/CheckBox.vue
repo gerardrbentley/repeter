@@ -4,8 +4,13 @@
     class="toggle hidden"
     type="checkbox"
     :value="isChecked"
+    data-test="input"
   />
-  <label :for="checkboxId" @click="$emit('update:isChecked')" class="my-auto"
+  <label
+    :for="checkboxId"
+    @click="$emit('update:isChecked')"
+    class="my-auto"
+    data-test="label"
     ><svg
       xmlns="http://www.w3.org/2000/svg"
       class="h-12 w-12 my-auto cursor-pointer"

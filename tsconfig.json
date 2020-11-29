@@ -4,10 +4,28 @@
     "module": "esnext",
     "moduleResolution": "node",
     "strict": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "noUnusedLocals": true,
+    "isolatedModules": true,
+    "importHelpers": true,
     "jsx": "preserve",
     "sourceMap": true,
-    "lib": ["esnext", "dom"],
-    "plugins": [{ "name": "@vuedx/typescript-plugin-vue" }]
+    "lib": [
+      "esnext",
+      "dom"
+    ],
+    "plugins": [
+      {
+        "name": "@vuedx/typescript-plugin-vue"
+      }
+    ],
+    "baseUrl": "."
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue"
+  ]
 }

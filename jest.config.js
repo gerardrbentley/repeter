@@ -12,7 +12,6 @@ module.exports = {
   transform: {
     // process `*.vue` files with `vue-jest`
     ".*\\.(vue)$": "vue-jest",
-    ".*\\.(js)$": "babel-jest",
     ".*\\.(ts)$": "ts-jest",
   },
   collectCoverage: true,

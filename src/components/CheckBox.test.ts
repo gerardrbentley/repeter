@@ -15,7 +15,6 @@ test('renders Check Box', async () => {
 
     expect(input.classes()).toContain('hidden');
     expect(label.isVisible()).toBeTruthy();
-    expect(wrapper).toMatchSnapshot();
 });
 
 test('toggle Emits update event', async () => {
